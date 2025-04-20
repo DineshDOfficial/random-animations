@@ -10,7 +10,7 @@ import { useEffect, useRef } from 'react';
 /**
  * Importing the UTILS
  */
-import {getAnimationInfoById} from "../../utils/commons";
+import { getAnimationInfoById } from "../../utils/commons";
 
 /**
  * Importing THree JS
@@ -22,6 +22,7 @@ const CubePage = () => {
      * Pass the Animation ID properly from this page
      */
     const animationInfo = getAnimationInfoById(1);
+
     const containerRef = useRef<HTMLDivElement | null>(null);
 
 
@@ -31,20 +32,35 @@ const CubePage = () => {
         const scene = new THREE.Scene();
 
         const camera = new THREE.PerspectiveCamera(
-            75,
+            45,
             window.innerWidth / window.innerHeight,
             0.1,
             1000
         );
-        camera.position.z = 5;
+        //camera.position.z = 5;
+        camera.position.set(10, 10, 10);
+        camera.lookAt(0, 0, 0);
+
 
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         containerRef.current.appendChild(renderer.domElement);
 
-        const geometry = new THREE.BoxGeometry();
-        const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
-        const cube = new THREE.Mesh(geometry, material);
+        const geometry = new THREE.BoxGeometry(3, 3, 3);
+
+        // Array of materials for each face (6 faces)
+        const materials = [
+            new THREE.MeshBasicMaterial({ color: 0xff0000 }), // Right (+x, red)
+            new THREE.MeshBasicMaterial({ color: 0x00ff00 }), // Left (-x, green)
+            new THREE.MeshBasicMaterial({ color: 0x0000ff }), // Top (+y, blue)
+            new THREE.MeshBasicMaterial({ color: 0xffff00 }), // Bottom (-y, yellow)
+            new THREE.MeshBasicMaterial({ color: 0xff00ff }), // Front (+z, magenta)
+            new THREE.MeshBasicMaterial({ color: 0x00ffff }), // Back (-z, cyan)
+        ];
+
+        //const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+
+        const cube = new THREE.Mesh(geometry, materials);
         scene.add(cube);
 
         const animate = () => {
@@ -75,7 +91,6 @@ const CubePage = () => {
     return <>
         <Head>
             <title>{animationInfo.name} | Random Animations</title>
-            <link rel="icon" href="/images/@cover.image.jpg" type="image/jpg" />
         </Head>
         <div ref={containerRef} style={{ width: '100vw', height: '100vh', overflow: 'hidden' }} />
     </>;

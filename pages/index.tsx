@@ -20,12 +20,12 @@ const Home: NextPage = () => {
         <>
             <Head>
                 <title>Random Animations</title>
-                <link rel="icon" href="/images/@cover.image.jpg" type="image/jpg" />
             </Head>
             <main className="mx-auto max-w-[1960px] p-4">
                 <div className="columns-1 gap-4 sm:columns-2 xl:columns-3 2xl:columns-4">
 
-                    {animations.map(({ id, name, description, version, displayImageURL, animationPageURL }) => (
+                    {animations.map(({ id, name, description, version, displayImageURL, animationPageURL, isEnabled }) => (
+                        isEnabled &&
                         <Link
                             key={id}
                             target="_blank"
@@ -66,27 +66,6 @@ const Home: NextPage = () => {
                 </div>
             </main>
 
-
-            <footer className="fixed bottom-0 left-0 w-full bg-black/50 p-4 text-center text-white/80 backdrop-blur-md">
-                Built By  {""}
-                <a
-                    href="https://youtube.com/@DineshDOfficial"
-                    target="_blank"
-                    className="font-semibold text-white hover:underline"
-                    rel="noreferrer"
-                >
-                    Dinesh
-                </a>
-                {""}  |  {""}
-                <a
-                    href="https://github.com/DineshDOfficial/random-animations"
-                    target="_blank"
-                    className="font-semibold hover:underline"
-                    rel="noreferrer"
-                >
-                    (source)
-                </a>
-            </footer>
         </>
     );
 };

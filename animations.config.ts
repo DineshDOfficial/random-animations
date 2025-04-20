@@ -1,18 +1,29 @@
 export const animations = [
     {
-        id: 1,
-        name: 'Rotating Cube',
-        description: 'A simple cube spinning on its axis.',
+        id: 0,
+        name: 'Workspace',
+        description: 'Aniamtion window to run and test the code.',
         version: '1.0',
         displayImageURL: '/images/animation.image.earth.jpg',
-        animationPageURL: '/animations/cube'
+        animationPageURL: '/animations/@workspace',
+        isEnabled : true,
+    },
+    {
+        id: 1,
+        name: 'Rotating Cube',
+        description: 'Simple cube spinning on its axis.',
+        version: '1.0',
+        displayImageURL: '/images/animation.image.earth.jpg',
+        animationPageURL: '/animations/cube',
+        isEnabled : true,
     },
     {
         id: 2,
         name: 'Earth Orbit',
-        description: 'A basic Earth with rotation and lighting.',
+        description: 'Basic Earth with rotation and lighting.',
         version: '1.0',
         displayImageURL: '/images/animation.image.earth.jpg',
-        animationPageURL: '/animations/earth'
+        animationPageURL: '/animations/earth',
+        isEnabled : true,
     },
 ];
