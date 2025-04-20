@@ -59,7 +59,7 @@ const Home: NextPage = () => {
 
                             {/* Version badge on hover bottom-left */}
                             <div className="absolute bottom-3 left-4 z-10 rounded bg-white/10 px-3 py-1 text-xs font-mono text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                                v{version}
+                                {version}
                             </div>
                         </Link>
                     ))}

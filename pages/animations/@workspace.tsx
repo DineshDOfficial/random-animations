@@ -11,7 +11,7 @@ import * as THREE from 'three';
  */
 import { getAnimationInfoById } from "../../utils/commons";
 
-export default function Trial() {
+export default function Workspace() {
 
     /**
      * Pass the Animation ID properly from this page

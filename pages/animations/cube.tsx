@@ -17,17 +17,17 @@ import { getAnimationInfoById } from "../../utils/commons";
  */
 import * as THREE from 'three';
 
-const CubePage = () => {
+const Cube = () => {
     /**
      * Pass the Animation ID properly from this page
      */
     const animationInfo = getAnimationInfoById(1);
 
-    const containerRef = useRef<HTMLDivElement | null>(null);
+    const animationContainerRef = useRef<HTMLDivElement | null>(null);
 
 
     useEffect(() => {
-        if (!containerRef.current) return;
+        const animationContainer = animationContainerRef.current!;
 
         const scene = new THREE.Scene();
 
@@ -44,7 +44,7 @@ const CubePage = () => {
 
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
-        containerRef.current.appendChild(renderer.domElement);
+        animationContainer.appendChild(renderer.domElement);
 
         const geometry = new THREE.BoxGeometry(3, 3, 3);
 
@@ -74,26 +74,14 @@ const CubePage = () => {
 
         animate();
 
-        const handleResize = () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        };
-
-        window.addEventListener('resize', handleResize);
-
-        return () => {
-            window.removeEventListener('resize', handleResize);
-            containerRef.current?.removeChild(renderer.domElement);
-        };
     }, []);
 
     return <>
         <Head>
             <title>{animationInfo.name} | Random Animations</title>
         </Head>
-        <div ref={containerRef} style={{ width: '100vw', height: '100vh', overflow: 'hidden' }} />
+        <div ref={animationContainerRef} style={{ width: '100vw', height: '100vh', overflow: 'hidden' }} />
     </>;
 };
 
-export default CubePage;
+export default Cube;
