@@ -10,10 +10,6 @@ import { useEffect } from "react";
 import { animations } from "../animations.config";
 
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGithub } from "@fortawesome/free-brands-svg-icons";
-
-
 const Home: NextPage = () => {
 
     useEffect(() => {

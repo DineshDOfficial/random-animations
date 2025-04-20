@@ -1,6 +1,6 @@
 export const animations = [
     {
-        id: '1',
+        id: 1,
         name: 'Rotating Cube',
         description: 'A simple cube spinning on its axis.',
         version: '1.0',
@@ -8,7 +8,7 @@ export const animations = [
         animationPageURL: '/animations/cube'
     },
     {
-        id: '2',
+        id: 2,
         name: 'Earth Orbit',
         description: 'A basic Earth with rotation and lighting.',
         version: '1.0',
