@@ -69,7 +69,8 @@ const dft = (points: { x: number; y: number }[]) => {
 };
 
 const FourierEpicycles = () => {
-    const animationInfo = getAnimationInfoById(3);
+    const animationInfo = getAnimationInfoById(4);
+
     const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
