@@ -37,6 +37,15 @@ export const animations = [
     },
     {
         id: 4,
+        name: 'Colliding Balls',
+        description: 'Balls collision simulation',
+        lastUpdatedDate: '21 April, 2025',
+        displayImageURL: '/images/colliding.balls.animation.tumbnail.image.png',
+        animationPageURL: '/animations/colliding.balls',
+        isEnabled: true,
+    },
+    {
+        id: 4,
         name: 'Fourier Epicycles',
         description: 'Rotating circles which can draw any shape.',
         lastUpdatedDate: '20 April, 2025',
