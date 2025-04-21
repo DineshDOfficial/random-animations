@@ -38,7 +38,7 @@ export const animations = [
     {
         id: 4,
         name: 'Colliding Balls',
-        description: 'Balls collision simulation',
+        description: 'Balls collision simulation with controlled parameters',
         lastUpdatedDate: '21 April, 2025',
         displayImageURL: '/images/colliding.balls.animation.tumbnail.image.png',
         animationPageURL: '/animations/colliding.balls',
