@@ -45,6 +45,15 @@ export const animations = [
         isEnabled: true,
     },
     {
+        id: 5,
+        name: 'Mandelbrot Zoom',
+        description: 'Mandelbrot Zoom',
+        lastUpdatedDate: '22 April, 2025',
+        displayImageURL: '/images/@default.animation.tumbnail.image.jpg',
+        animationPageURL: '/animations/mandelbrot.zoom',
+        isEnabled: true,
+    },
+    {
         id: 4,
         name: 'Fourier Epicycles',
         description: 'Rotating circles which can draw any shape.',

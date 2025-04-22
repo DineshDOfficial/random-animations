@@ -10,10 +10,10 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { getAnimationInfoById } from "../../utils/commons";
 
 
-const BALL_COUNT = 100;
-const BOX_SIZE = 50;
-const BALL_RADIUS = 1; // in units (e.g., meters or abstract)
-const INITIAL_SPEED = 0.5; // units per frame
+const BALL_COUNT = 5000;
+const BOX_SIZE = 300;
+const BALL_RADIUS = 5; // in units (e.g., meters or abstract)
+const INITIAL_SPEED = 2.0; // units per frame
 
 type Ball = {
     mesh: THREE.Mesh;
@@ -140,9 +140,10 @@ const CollidingBalls: React.FC = () => {
             lineHeight: "1.6",
             pointerEvents: "none", // don't block mouse
         }}>
+            <div><strong>Box Size:</strong> {BOX_SIZE}</div>
             <div><strong>Ball Count:</strong> {BALL_COUNT}</div>
-            <div><strong>Radius:</strong> {BALL_RADIUS} units</div>
-            <div><strong>Speed:</strong> {INITIAL_SPEED.toFixed(2)} u/f</div>
+            <div><strong>Ball Radius:</strong> {BALL_RADIUS} units</div>
+            <div><strong>Ball Speed:</strong> {INITIAL_SPEED.toFixed(2)} u/f</div>
         </div>
     </>
         ;
