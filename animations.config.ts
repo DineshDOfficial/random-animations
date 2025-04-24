@@ -54,6 +54,15 @@ export const animations = [
         isEnabled: true,
     },
     {
+        id: 6,
+        name: 'Prime Wave',
+        description: 'Mandelbrot Zoom',
+        lastUpdatedDate: '24 April, 2025',
+        displayImageURL: '/images/@default.animation.tumbnail.image.jpg',
+        animationPageURL: '/animations/prime.wave',
+        isEnabled: true,
+    },
+    {
         id: 4,
         name: 'Fourier Epicycles',
         description: 'Rotating circles which can draw any shape.',
