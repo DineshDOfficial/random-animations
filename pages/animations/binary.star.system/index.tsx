@@ -7,7 +7,7 @@ import * as THREE from 'three';
 /**
  * Importing the UTILS
  */
-import { getAnimationInfoById } from "../../utils/commons";
+import { getAnimationInfoById } from "../../../utils/commons";
 
 
 const G = 0.05;

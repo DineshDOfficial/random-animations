@@ -4,7 +4,8 @@
 import Head from "next/head";
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
-import { getAnimationInfoById } from "../../utils/commons";
+
+import { getAnimationInfoById } from "../../../utils/commons";
 
 const generateShape = (type: 'circle' | 'square' | 'triangle', numPoints: number) => {
     const points: { x: number; y: number }[] = [];
@@ -69,7 +70,7 @@ const dft = (points: { x: number; y: number }[]) => {
 };
 
 const FourierEpicycles = () => {
-    const animationInfo = getAnimationInfoById(4);
+    const animationInfo = getAnimationInfoById(7);
 
     const containerRef = useRef<HTMLDivElement>(null);
 

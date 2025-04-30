@@ -6,6 +6,7 @@
  * I Made prime numbers into a audio file
  */
 "use client";
+import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 
@@ -153,36 +154,42 @@ export default function PrimeWaveVisualizer() {
     };
 
     return (
-        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", background: "#000" }}>
-            <div style={{ border: "2px solid white", position: "relative", width: "80%", height: "80%" }}>
-                <div style={{
-                    position: "absolute",
-                    top: 10,
-                    left: "50%",
-                    transform: "translateX(-50%)",
-                    zIndex: 1,
-                    color: "white",
-                    textAlign: "center",
-                    backgroundColor: "rgba(0,0,0,0.7)",
-                    padding: "10px 20px",
-                    borderRadius: "10px"
-                }}>
-                    <label>
-                        Prime Number Limit: {primeCount}
-                        <input type="range" min={1} max={100} value={primeCount}
-                            onChange={(e) => setPrimeCount(parseInt(e.target.value))} />
-                    </label>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <label>
-                         Speed: {speed.toFixed(3)}
-                        <input type="range" min={0} max={0.05} step={0.001}
-                            value={speed} onChange={(e) => setSpeed(parseFloat(e.target.value))} />
-                    </label>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <button onClick={generateAudio}>Play Sound</button>
+        <>
+            <Head>
+                <title>Prime Wave | Random Animations</title>
+            </Head>
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", background: "#000" }}>
+                <div style={{ border: "2px solid white", position: "relative", width: "80%", height: "80%" }}>
+                    <div style={{
+                        position: "absolute",
+                        top: 10,
+                        left: "50%",
+                        transform: "translateX(-50%)",
+                        zIndex: 1,
+                        color: "white",
+                        textAlign: "center",
+                        backgroundColor: "rgba(0,0,0,0.7)",
+                        padding: "10px 20px",
+                        borderRadius: "10px"
+                    }}>
+                        <label>
+                            Prime Number Limit: {primeCount}
+                            <input type="range" min={1} max={100} value={primeCount}
+                                onChange={(e) => setPrimeCount(parseInt(e.target.value))} />
+                        </label>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <label>
+                            Speed: {speed.toFixed(3)}
+                            <input type="range" min={0} max={0.05} step={0.001}
+                                value={speed} onChange={(e) => setSpeed(parseFloat(e.target.value))} />
+                        </label>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <button onClick={generateAudio}>Play Sound</button>
+                    </div>
+                    <div ref={containerRef} style={{ width: "100%", height: "100%" }} />
                 </div>
-                <div ref={containerRef} style={{ width: "100%", height: "100%" }} />
             </div>
-        </div>
+        </>
+
     );
 }

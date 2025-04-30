@@ -10,7 +10,7 @@ import { useEffect, useRef } from 'react';
 /**
  * Importing the UTILS
  */
-import { getAnimationInfoById } from "../../utils/commons";
+import { getAnimationInfoById } from "../../../utils/commons";
 
 /**
  * Importing THree JS

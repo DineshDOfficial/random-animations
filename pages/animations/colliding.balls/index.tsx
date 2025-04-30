@@ -7,7 +7,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 /**
  * Importing the UTILS
  */
-import { getAnimationInfoById } from "../../utils/commons";
+import { getAnimationInfoById } from "../../../utils/commons";
 
 
 const BALL_COUNT = 5000;
