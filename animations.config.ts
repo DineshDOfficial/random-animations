@@ -73,10 +73,10 @@ export const animations = [
     },
     {
         id: 8,
-        name: 'Double Pendulam',
-        description: 'Double Pendulam',
+        name: 'Double Pendulum',
+        description: 'Choas Simulation of Multiple Double Pendulum',
         lastUpdatedDate: '29 April, 2025',
-        displayImageURL: '/images/@default.animation.tumbnail.image.jpg',
+        displayImageURL: '/images/dpendulums.animation.tumbnail.image.png',
         animationPageURL: '/animations/double.pendulam',
         isEnabled: true,
     },
