@@ -82,10 +82,10 @@ export const animations = [
     },
     {
         id: 9,
-        name: "Conway's Game of Life",
+        name: "Game of Life",
         description: "Conway's Game of Life",
         lastUpdatedDate: '1 May, 2025',
-        displayImageURL: '/images/@default.animation.tumbnail.image.jpg',
+        displayImageURL: '/images/game.of.life.animation.tumbnail.image.png',
         animationPageURL: '/animations/game.of.life',
         isEnabled: true,
     },
