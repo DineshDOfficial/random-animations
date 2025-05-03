@@ -89,4 +89,13 @@ export const animations = [
         animationPageURL: '/animations/game.of.life',
         isEnabled: true,
     },
+    {
+        id: 10,
+        name: "Rotating Semicircles",
+        description: "Animations of Rotating Semicircles",
+        lastUpdatedDate: '1 May, 2025',
+        displayImageURL: '/images/@default.animation.tumbnail.image.jpg',
+        animationPageURL: '/animations/rotating.semicircles',
+        isEnabled: true,
+    },
 ];
