@@ -1,17 +1,41 @@
+import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 
 const SemiCircles = () => {
     const mountRef = useRef<HTMLDivElement>(null);
     const speedRef = useRef(0.01);
-    const [numLayers, setNumLayers] = useState(20); // Start with 20 layers
+    const [numLayers, setNumLayers] = useState(20);
 
     const sceneRef = useRef<THREE.Scene>();
     const circleGroupRef = useRef<THREE.Group>(new THREE.Group());
 
+    // Sound system
+    const audioCtxRef = useRef<AudioContext | null>(null);
+    const lastPlayedTimeRef = useRef<number[]>([]); // per layer timestamp
+
+    const playTone = (frequency: number, duration = 0.005, volume = 0.1) => {
+        if (!audioCtxRef.current) return;
+        const osc = audioCtxRef.current.createOscillator();
+        const gain = audioCtxRef.current.createGain();
+
+        osc.type = "sine";
+        osc.frequency.value = frequency;
+
+        gain.gain.value = volume;
+
+        osc.connect(gain);
+        gain.connect(audioCtxRef.current.destination);
+
+        osc.start();
+        osc.stop(audioCtxRef.current.currentTime + duration);
+    };
+
     useEffect(() => {
+        audioCtxRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+        lastPlayedTimeRef.current = new Array(numLayers).fill(0);
+
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color("#111111");
         sceneRef.current = scene;
 
         const camera = new THREE.PerspectiveCamera(
@@ -33,9 +57,19 @@ const SemiCircles = () => {
         let frameId: number;
         const animate = () => {
             frameId = requestAnimationFrame(animate);
+            const now = performance.now();
+
             circleGroupRef.current.children.forEach((child, i) => {
                 child.rotation.z += speedRef.current * (i + 1);
+
+                // Play sound for every 5th layer only, every 150ms at most
+                if (i % 5 === 0 && now - lastPlayedTimeRef.current[i] > 150) {
+                    const freq = 200 + i * 30;
+                    playTone(freq, 0.05, 0.05);
+                    lastPlayedTimeRef.current[i] = now;
+                }
             });
+
             renderer.render(scene, camera);
         };
         animate();
@@ -62,12 +96,13 @@ const SemiCircles = () => {
             window.removeEventListener("keydown", handleKeyDown);
             mountRef.current?.removeChild(renderer.domElement);
             renderer.dispose();
+            audioCtxRef.current?.close();
         };
     }, []);
 
     useEffect(() => {
         const group = circleGroupRef.current;
-        // Remove all existing semi-circles
+
         while (group.children.length > 0) {
             const mesh = group.children[0] as THREE.Mesh;
             mesh.geometry.dispose();
@@ -76,7 +111,7 @@ const SemiCircles = () => {
         }
 
         const radiusStep = 0.6;
-        const thickness = 0.1;
+        const thickness = 0.2;
         const segments = 24;
 
         for (let i = 0; i < numLayers; i++) {
@@ -102,10 +137,16 @@ const SemiCircles = () => {
             const mesh = new THREE.Mesh(geometry, material);
             group.add(mesh);
         }
+
+        // Resize audio tracking array
+        lastPlayedTimeRef.current = new Array(numLayers).fill(0);
     }, [numLayers]);
 
     return (
         <>
+            <Head>
+                <title>Rotating Semicircles | Random Animations</title>
+            </Head>
             <div ref={mountRef} style={{ width: "100vw", height: "100vh", overflow: "hidden" }} />
             <div
                 style={{

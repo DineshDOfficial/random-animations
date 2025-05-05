@@ -1,5 +1,6 @@
 'use client'
 
+import Head from 'next/head'
 import React, { useEffect, useRef, useState } from 'react'
 
 type SortAlgorithm = 'bubble' | 'insertion' | 'selection'
@@ -10,6 +11,9 @@ export default function SortingVisualizer() {
     const [isSorting, setIsSorting] = useState(false)
     const [algorithm, setAlgorithm] = useState<SortAlgorithm>('bubble')
     const stopRef = useRef(false)
+
+    const [elapsedTime, setElapsedTime] = useState(0)
+    const timerRef = useRef<NodeJS.Timeout | null>(null)
 
     const audioCtxRef = useRef<AudioContext | null>(null)
     useEffect(() => {
@@ -93,162 +97,203 @@ export default function SortingVisualizer() {
     const startSort = async () => {
         setIsSorting(true)
         stopRef.current = false
-        const arr = [...array]
+        setElapsedTime(0)
 
+        // Start timer
+        timerRef.current = setInterval(() => {
+            setElapsedTime((prev) => prev + 10)
+        }, 10)
+
+        const arr = [...array]
         if (algorithm === 'bubble') await bubbleSort(arr)
         else if (algorithm === 'insertion') await insertionSort(arr)
         else if (algorithm === 'selection') await selectionSort(arr)
 
+        stopTimer()
         setIsSorting(false)
+    }
+
+    const stopTimer = () => {
+        if (timerRef.current) {
+            clearInterval(timerRef.current)
+            timerRef.current = null
+        }
     }
 
     const stopSort = () => {
         stopRef.current = true
+        stopTimer()
         setIsSorting(false)
     }
 
     const resetArray = () => {
         stopSort()
         generateArray()
+        setElapsedTime(0)
     }
 
     return (
-        <div
-            style={{
-                background: '#000',
-                height: '100vh',
-                width: '100vw',
-                color: '#fff',
-                fontFamily: 'Arial, sans-serif',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                position: 'relative',
-            }}
-        >
-            {/* Controls top-right */}
+        <>
+            <Head>
+                <title>Sorting Algorithms | Random Animations</title>
+            </Head>
             <div
                 style={{
-                    position: 'absolute',
-                    top: '1rem',
-                    right: '1rem',
+                    background: '#000',
+                    height: '100vh',
+                    width: '100vw',
+                    color: '#fff',
+                    fontFamily: 'Arial, sans-serif',
                     display: 'flex',
-                    flexDirection: 'column',
-                    gap: '0.5rem',
-                    width: '150px',
-                }}
-            >
-                <label style={{ fontSize: '0.75rem' }}>
-                    Size: {arraySize}
-                    <input
-                        type="range"
-                        min="10"
-                        max="80"
-                        value={arraySize}
-                        onChange={(e) => {
-                            setArraySize(Number(e.target.value))
-                            generateArray()
-                        }}
-                        disabled={isSorting}
-                        style={{ width: '100%' }}
-                    />
-                </label>
-                <select
-                    value={algorithm}
-                    onChange={(e) => setAlgorithm(e.target.value as SortAlgorithm)}
-                    disabled={isSorting}
-                    style={{
-                        padding: '4px',
-                        fontSize: '0.8rem',
-                        color: '#000', // Ensures text is visible
-                        backgroundColor: '#fff', // Ensures contrast
-                    }}
-                >
-                    <option value="bubble">Bubble Sort</option>
-                    <option value="insertion">Insertion Sort</option>
-                    <option value="selection">Selection Sort</option>
-                </select>
-
-                <button
-                    onClick={startSort}
-                    disabled={isSorting}
-                    style={{
-                        background: '#0f0',
-                        color: '#000',
-                        padding: '5px',
-                        fontWeight: 'bold',
-                        fontSize: '0.8rem',
-                    }}
-                >
-                    Sort
-                </button>
-                <button
-                    onClick={stopSort}
-                    disabled={!isSorting}
-                    style={{
-                        background: '#f00',
-                        color: '#fff',
-                        padding: '5px',
-                        fontWeight: 'bold',
-                        fontSize: '0.8rem',
-                    }}
-                >
-                    Stop
-                </button>
-                <button
-                    onClick={resetArray}
-                    disabled={isSorting}
-                    style={{
-                        background: '#00f',
-                        color: '#fff',
-                        padding: '5px',
-                        fontWeight: 'bold',
-                        fontSize: '0.8rem',
-                    }}
-                >
-                    Reset
-                </button>
-            </div>
-
-            {/* Bar Chart */}
-            <div
-                style={{
-                    display: 'flex',
-                    alignItems: 'flex-end',
                     justifyContent: 'center',
-                    width: '100%',
-                    maxWidth: '500px',
-                    height: '60vh',
-                    gap: '1px',
+                    alignItems: 'center',
+                    position: 'relative',
                 }}
             >
-                {array.map((val, i) => (
-                    <div
-                        key={i}
+                {/* Controls top-right */}
+                <div
+                    style={{
+                        position: 'absolute',
+                        top: '1rem',
+                        right: '1rem',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '0.5rem',
+                        width: '150px',
+                    }}
+                >
+                    <label style={{ fontSize: '0.75rem' }}>
+                        Size: {arraySize}
+                        <input
+                            type="range"
+                            min="10"
+                            max="80"
+                            value={arraySize}
+                            onChange={(e) => {
+                                setArraySize(Number(e.target.value))
+                                generateArray()
+                            }}
+                            disabled={isSorting}
+                            style={{ width: '100%' }}
+                        />
+                    </label>
+                    <select
+                        value={algorithm}
+                        onChange={(e) => setAlgorithm(e.target.value as SortAlgorithm)}
+                        disabled={isSorting}
                         style={{
-                            height: `${val * 0.6}%`,
-                            width: `${100 / array.length}%`,
-                            background: '#0cf',
-                            position: 'relative',
-                            transition: 'height 0.1s linear',
-                            display: 'flex',
-                            alignItems: 'flex-start',
-                            justifyContent: 'center',
+                            padding: '4px',
+                            fontSize: '0.8rem',
+                            color: '#000',
+                            backgroundColor: '#fff',
                         }}
                     >
-                        <span
+                        <option value="bubble">Bubble Sort</option>
+                        <option value="insertion">Insertion Sort</option>
+                        <option value="selection">Selection Sort</option>
+                    </select>
+
+                    <button
+                        onClick={startSort}
+                        disabled={isSorting}
+                        style={{
+                            background: '#0f0',
+                            color: '#000',
+                            padding: '5px',
+                            fontWeight: 'bold',
+                            fontSize: '0.8rem',
+                        }}
+                    >
+                        Sort
+                    </button>
+                    <button
+                        onClick={stopSort}
+                        disabled={!isSorting}
+                        style={{
+                            background: '#f00',
+                            color: '#fff',
+                            padding: '5px',
+                            fontWeight: 'bold',
+                            fontSize: '0.8rem',
+                        }}
+                    >
+                        Stop
+                    </button>
+                    <button
+                        onClick={resetArray}
+                        disabled={isSorting}
+                        style={{
+                            background: '#00f',
+                            color: '#fff',
+                            padding: '5px',
+                            fontWeight: 'bold',
+                            fontSize: '0.8rem',
+                        }}
+                    >
+                        Reset
+                    </button>
+                </div>
+
+                {/* TOP BAR - Algorithm, Size, Timer */}
+                <div
+                    style={{
+                        position: 'absolute',
+                        top: '1rem',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        textAlign: 'center',
+                        color: '#fff',
+                        fontSize: '1rem',
+                        fontWeight: 'bold',
+                        pointerEvents: 'none',
+                        zIndex: 10,
+                    }}
+                >
+                    Algorithm: {algorithm.charAt(0).toUpperCase() + algorithm.slice(1)}<br />
+                    Size: {arraySize}<br />
+                    Time: {(elapsedTime / 1000).toFixed(2)}s
+                </div>
+
+                {/* Bar Chart */}
+                <div
+                    style={{
+                        display: 'flex',
+                        alignItems: 'flex-end',
+                        justifyContent: 'center',
+                        width: '100%',
+                        maxWidth: '500px',
+                        height: '60vh',
+                        gap: '1px',
+                    }}
+                >
+                    {array.map((val, i) => (
+                        <div
+                            key={i}
                             style={{
-                                position: 'absolute',
-                                top: -18,
-                                fontSize: '10px',
-                                color: 'white',
+                                height: `${val * 0.6}%`,
+                                width: `${100 / array.length}%`,
+                                background: '#05fa09',
+                                position: 'relative',
+                                transition: 'height 0.1s linear',
+                                display: 'flex',
+                                alignItems: 'flex-start',
+                                justifyContent: 'center',
                             }}
                         >
-                            {val}
-                        </span>
-                    </div>
-                ))}
+                            <span
+                                style={{
+                                    position: 'absolute',
+                                    top: -18,
+                                    fontSize: '10px',
+                                    color: 'white',
+                                }}
+                            >
+                                {val}
+                            </span>
+                        </div>
+                    ))}
+                </div>
             </div>
-        </div>
+        </>
     )
 }
