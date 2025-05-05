@@ -1,3 +1,5 @@
+// pages/semi-circles.tsx
+
 import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
@@ -10,40 +12,50 @@ const SemiCircles = () => {
     const sceneRef = useRef<THREE.Scene>();
     const circleGroupRef = useRef<THREE.Group>(new THREE.Group());
 
-    // Sound system
     const audioCtxRef = useRef<AudioContext | null>(null);
-    const lastPlayedTimeRef = useRef<number[]>([]); // per layer timestamp
+    const rotationTrackerRef = useRef<number[]>([]);
+    const lastTriggerTimeRef = useRef<number[]>([]);
 
-    const playTone = (frequency: number, duration = 0.005, volume = 0.1) => {
-        if (!audioCtxRef.current) return;
-        const osc = audioCtxRef.current.createOscillator();
-        const gain = audioCtxRef.current.createGain();
+    const playTrippyTone = (frequency: number, layerIndex: number) => {
+        const ctx = audioCtxRef.current;
+        if (!ctx) return;
 
-        osc.type = "sine";
-        osc.frequency.value = frequency;
+        const osc1 = ctx.createOscillator();
+        const osc2 = ctx.createOscillator();
+        const gain = ctx.createGain();
+        const panner = ctx.createStereoPanner();
 
-        gain.gain.value = volume;
+        osc1.type = "sawtooth";
+        osc1.frequency.value = frequency;
 
-        osc.connect(gain);
-        gain.connect(audioCtxRef.current.destination);
+        osc2.type = "triangle";
+        osc2.frequency.value = frequency * 1.01;
 
-        osc.start();
-        osc.stop(audioCtxRef.current.currentTime + duration);
+        gain.gain.setValueAtTime(0.001, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.2, ctx.currentTime + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.4);
+
+        const panValue = ((layerIndex % 10) - 5) / 5;
+        panner.pan.setValueAtTime(panValue, ctx.currentTime);
+
+        osc1.connect(gain);
+        osc2.connect(gain);
+        gain.connect(panner);
+        panner.connect(ctx.destination);
+
+        osc1.start();
+        osc2.start();
+        osc1.stop(ctx.currentTime + 0.5);
+        osc2.stop(ctx.currentTime + 0.5);
     };
 
     useEffect(() => {
         audioCtxRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
-        lastPlayedTimeRef.current = new Array(numLayers).fill(0);
 
         const scene = new THREE.Scene();
         sceneRef.current = scene;
 
-        const camera = new THREE.PerspectiveCamera(
-            100,
-            window.innerWidth / window.innerHeight,
-            0.1,
-            1000
-        );
+        const camera = new THREE.PerspectiveCamera(100, window.innerWidth / window.innerHeight, 0.1, 1000);
         camera.position.z = 15;
 
         const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -54,24 +66,39 @@ const SemiCircles = () => {
         scene.add(ambientLight);
         scene.add(circleGroupRef.current);
 
+        rotationTrackerRef.current = new Array(numLayers).fill(0);
+        lastTriggerTimeRef.current = new Array(numLayers).fill(0);
+        const startTime = performance.now();
+
+        // Trigger initial sound immediately
+        for (let i = 0; i < numLayers; i++) {
+            const freq = 200 + i * 30;
+            playTrippyTone(freq, i);
+        }
+
         let frameId: number;
         const animate = () => {
             frameId = requestAnimationFrame(animate);
             const now = performance.now();
 
             circleGroupRef.current.children.forEach((child, i) => {
-                child.rotation.z += speedRef.current * (i + 1);
+                const rotationSpeed = speedRef.current * (i + 1);
+                child.rotation.z += rotationSpeed;
 
-                // Play sound for every 5th layer only, every 150ms at most
-                if (i % 5 === 0 && now - lastPlayedTimeRef.current[i] > 150) {
+                rotationTrackerRef.current[i] += rotationSpeed;
+
+                // Trigger sound on every PI (~180°) rotation
+                if (rotationTrackerRef.current[i] >= Math.PI) {
+                    rotationTrackerRef.current[i] -= Math.PI;
+
                     const freq = 200 + i * 30;
-                    playTone(freq, 0.05, 0.05);
-                    lastPlayedTimeRef.current[i] = now;
+                    playTrippyTone(freq, i);
                 }
             });
 
             renderer.render(scene, camera);
         };
+
         animate();
 
         const handleResize = () => {
@@ -87,13 +114,21 @@ const SemiCircles = () => {
             else if (e.key === "-") setNumLayers((prev) => Math.max(prev - 1, 1));
         };
 
+        const resumeAudioContext = () => {
+            if (audioCtxRef.current?.state === "suspended") {
+                audioCtxRef.current.resume();
+            }
+        };
+
         window.addEventListener("resize", handleResize);
         window.addEventListener("keydown", handleKeyDown);
+        window.addEventListener("click", resumeAudioContext);
 
         return () => {
             cancelAnimationFrame(frameId);
             window.removeEventListener("resize", handleResize);
             window.removeEventListener("keydown", handleKeyDown);
+            window.removeEventListener("click", resumeAudioContext);
             mountRef.current?.removeChild(renderer.domElement);
             renderer.dispose();
             audioCtxRef.current?.close();
@@ -117,6 +152,7 @@ const SemiCircles = () => {
         for (let i = 0; i < numLayers; i++) {
             const radius = 2 + i * radiusStep;
             const points: THREE.Vector3[] = [];
+
             for (let j = 0; j <= segments; j++) {
                 const theta = Math.PI * (j / segments);
                 const x = radius * Math.cos(theta);
@@ -138,8 +174,9 @@ const SemiCircles = () => {
             group.add(mesh);
         }
 
-        // Resize audio tracking array
-        lastPlayedTimeRef.current = new Array(numLayers).fill(0);
+        // Reset rotation and sound tracking
+        rotationTrackerRef.current = new Array(numLayers).fill(0);
+        lastTriggerTimeRef.current = new Array(numLayers).fill(0);
     }, [numLayers]);
 
     return (

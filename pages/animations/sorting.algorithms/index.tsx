@@ -261,7 +261,7 @@ export default function SortingVisualizer() {
                         alignItems: 'flex-end',
                         justifyContent: 'center',
                         width: '100%',
-                        maxWidth: '500px',
+                        maxWidth: '1300px',
                         height: '60vh',
                         gap: '1px',
                     }}
