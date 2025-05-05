@@ -21,7 +21,7 @@ const Home: NextPage = () => {
             <Head>
                 <title>Random Animations</title>
             </Head>
-            <main className="mx-auto max-w-[1960px] p-4">
+            <main className="mx-auto max-w-[1960px] p-4 pt-5 pb-20">
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
                     {animations.map(({ id, name, description, lastUpdatedDate, displayImageURL, animationPageURL, isEnabled }) => (
                         isEnabled && (
